@@ -1,3 +1,54 @@
+#Importação da bibliotéca psycopg2
+import psycopg2
+
+#---------------------------------------------------------------------
+#Criação da class AppBD
+class AppBD:
+    def __init__(self):
+        print('Método Construtor')
+
+# ---------------------------------------------------------------------
+#Estabelecendo conexão com o bancode dados
+    def abrirConexao(self):
+        try:
+          self.connection = psycopg2.connect(user="postgres",
+                                  password="Daniel0910",
+                                  host="localhost",
+                                  port="5432",
+                                  database="postgres")
+
+        except (Exception, psycopg2.Error) as error :
+            if(self.connection):
+                print("Falha ao se conectar ao Banco de Dados", error)
+
+#-----------------------------------------------------------------------------
+#Selecionar todos os dados registrados no banco de dados
+
+    def selecionarDados(self):
+        try:
+            self.abrirConexao()
+            cursor = self.connection.cursor()
+    
+            print("Selecionando todos os produtos")
+            sql_select_query = """select * from estoque """
+
+            cursor.execute(sql_select_query)
+            registros = cursor.fetchall()             
+            print(registros)
+                
+    
+        except (Exception, psycopg2.Error) as error:
+            print("sem banco de dados!!!!!!!", error)
+    
+        finally:
+            # closing database connection.
+            if (self.connection):
+                cursor.close()
+                self.connection.close()
+                print("A conexão com o PostgreSQL foi fechada.")
+        return registros
+
+#-----------------------------------------------------------------------------
 #Definindo a função Inserir Produto
     def inserirDados(self, codigo, nome, preco):
         try:
